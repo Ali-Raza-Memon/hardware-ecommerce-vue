@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const cloudName = 'dhvjnlvtm'; // Your Cloudinary cloud name
-const uploadPreset = 'unsigned_upload'; // The upload preset you created
+const cloudName = 'dhvjnlvtm'; 
+const uploadPreset = 'unsigned_upload'; 
 
 export function uploadImage(file) {
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;

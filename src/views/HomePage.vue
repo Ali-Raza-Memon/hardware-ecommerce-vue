@@ -23,10 +23,10 @@
       <div class="col s12 m9">
         <div class="row">
           <div v-if="products.length === 0" class="col s12"><p>No products available</p></div>
-          <div v-for="product in products" :key="product.id" class="col s12 m6 l4">
+          <div v-for="product in products" :key="product.productId" class="col s12 m6 l4">
             <div class="card">
               <div class="card-image">
-                <img :src="product.image" alt="Product Image">
+                <img :src="product.productUrl || 'default-placeholder-image.jpg'" alt="Product Image">
                 <span class="card-title">{{ product.name }}</span>
               </div>
               <div class="card-content">
@@ -35,7 +35,7 @@
               </div>
               <div class="card-action">
                 <a href="/cart" class="btn">Add to Cart</a>
-                <a :href="'/product/' + product.id" class="btn">View Details</a>
+                <a :href="'/product/' + product.productId" class="btn">View Details</a>
               </div>
             </div>
           </div>
@@ -69,27 +69,13 @@
 
 <script>
 import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 export default {
   name: 'HomePage',
   setup() {
-    const products = ref([
-      {
-        id: 1,
-        name: 'Heavy-duty hammer',
-        description: 'A durable and reliable hammer for all your construction needs.',
-        price: 19.99,
-        image: 'path-to-hammer-image.jpg'  // Replace with actual image path
-      },
-      {
-        id: 2,
-        name: 'Set of screwdrivers',
-        description: 'A complete set of screwdrivers in various sizes.',
-        price: 9.99,
-        image: 'path-to-screwdrivers-image.jpg'  // Replace with actual image path
-      }
-    ]);
-
+    const products = ref([]);
+    const categories = ref([]);
     const additionalProducts = ref([
       {
         id: 3,
@@ -121,35 +107,41 @@ export default {
       }
     ]);
 
-    const categories = ref([
-      {
-        id: 1,
-        name: 'Power Tools',
-        image: '/images/power-tools.png'  // Replace with actual image path
-      },
-      {
-        id: 2,
-        name: 'Hand Tools',
-        image: '/images/hand-tools.png'  // Replace with actual image path
-      },
-      {
-        id: 3,
-        name: 'Accessories',
-        image: '/images/accessories.png'  // Replace with actual image path
+    // Fetch products
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/ecommerce/products/all');
+        products.value = response.data.map(product => ({
+          productId: product.productId,
+          name: product.name,
+          description: product.description,
+          price: product.price,
+          productUrl: product.productUrl || 'default-placeholder-image.jpg'  // Ensure a default image
+        }));
+      } catch (error) {
+        console.error('Error fetching products:', error);
       }
-    ]);
+    };
+
+    // Fetch categories
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/ecommerce/categories/all');
+        categories.value = response.data.map(category => ({
+          id: category.id,
+          name: category.name,
+          image: category.image || '/path-to-default-category-image.jpg'  // Ensure a default image
+        }));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
 
     onMounted(async () => {
-      try {
-        // Assuming getProducts() and getCategories() fetch data from an API
-        // Here we use hardcoded data for demonstration
-        // products.value = await getProducts();
-        // categories.value = await getCategories();
-        console.log(products.value);
-        console.log(categories.value); // Check if images are correctly loaded
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+      await fetchProducts();
+      await fetchCategories();
+      console.log(products.value);
+      console.log(categories.value); // Check if images are correctly loaded
     });
 
     return {
@@ -251,6 +243,3 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 </style>
-
-
-
