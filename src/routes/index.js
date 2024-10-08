@@ -12,6 +12,7 @@ import CustomerManagement from "@/views/adminviews/CustomerManagement.vue";
 import CategoryProductManagement from "@/views/adminviews/ProductManagement.vue";
 import ProductManagement from "@/views/adminviews/ProductManagement.vue";
 import OrderManagement from "@/views/adminviews/OrderManagement.vue";
+import UploadImage from "@/views/UploadImage.vue"
 
 const routes = [
   { path: '/', component: HomePage },
@@ -26,7 +27,12 @@ const routes = [
   { path: '/admin/customers', name: 'CustomerManagement', component: CustomerManagement },
   { path: '/admin/category-product', name: 'CategoryProductManagement', component: CategoryProductManagement },
   { path: '/admin/products', name: 'ProductManagement', component: ProductManagement },
-  { path: '/admin/orders', name: 'OrderManagement', component: OrderManagement }
+  { path: '/admin/orders', name: 'OrderManagement', component: OrderManagement },
+  {
+    path: '/upload',
+    name: 'UploadImage',
+    component: UploadImage
+  }
 ];
 
 const router = createRouter({
