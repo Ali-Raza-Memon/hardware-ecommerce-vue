@@ -56,7 +56,7 @@ export default {
     },
     async fetchCustomers() {
       try {
-        const response = await axios.get('http://localhost:8080/customer/getAll');
+        const response = await axios.get('http://localhost:8080/ecommerce/customer/getAll');
         this.customers = response.data.map(customer => ({
           userId: customer.userId,
           userName: customer.userName,
