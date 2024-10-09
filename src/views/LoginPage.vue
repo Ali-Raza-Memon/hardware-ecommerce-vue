@@ -36,7 +36,7 @@ export default {
     };
   },
   methods: {
-    async login() {
+  async login() {
       // Simple validation checks
       if (!this.validateEmail(this.email)) {
         this.message = 'Please enter a valid email address.';
@@ -52,6 +52,7 @@ export default {
           email: this.email,
           password: this.password
         };
+
         const response = await axios.post('http://localhost:8080/ecommerce/customer/login', loginData, {
           headers: {
             'Content-Type': 'application/json'
@@ -62,14 +63,23 @@ export default {
           // Assuming the response contains the customer object
           const customer = response.data;
 
-          // Store user info securely (consider using Vuex or another state management)
-          localStorage.setItem('user-info', JSON.stringify(customer));
+          // Extract necessary information
+          const userInfo = {
+            userId: customer.userId,
+            userName: customer.userName,
+            role: customer.role,
+            contact: customer.contact,
+          };
+
+          // Store user info in local storage
+          alert(JSON.stringify(userInfo));
+          localStorage.setItem('user-info', JSON.stringify(userInfo));
 
           this.message = 'Login successful!';
 
           // Redirect based on role
           if (customer.role.toLowerCase() === 'customer') {
-            this.$router.push('/');
+            this.$router.push('/homepage');
           } else if (customer.role.toLowerCase() === 'admin') {
             this.$router.push('/admin');
           } else {
