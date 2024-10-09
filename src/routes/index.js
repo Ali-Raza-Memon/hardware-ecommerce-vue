@@ -15,12 +15,15 @@ import OrderManagement from "@/views/adminviews/OrderManagement.vue";
 import UploadImage from "@/views/UploadImage.vue"
 
 const routes = [
-  { path: '/', component: HomePage },
+
+  { path: '/', name: 'Home', component: LoginPage },
+
+  { path: '/homepage', component: HomePage },
   { path: '/about', name: 'About', component: AboutPage },
   { path: '/category', name: 'Category', component: CategoryPage },
   { path: '/cart', name: 'Cart', component: CartPage },
-  { path: '/order', name: 'Order', component: OrderPage }, // Existing OrderPage route
-  { path: '/order-confirmation', name: 'OrderConfirmation', component: OrderConfirmationPage }, // New OrderConfirmationPage route
+  { path: '/order', name: 'Order', component: OrderPage }, 
+  { path: '/order-confirmation', name: 'OrderConfirmation', component: OrderConfirmationPage }, 
   { path: '/register', name: 'Register', component: Registration },
   { path: '/login', name: 'Login', component: LoginPage },
   { path: '/admin', name: 'Admin', component: AdminDashboard },
