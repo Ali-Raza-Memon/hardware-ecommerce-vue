@@ -77,34 +77,7 @@ export default {
     const products = ref([]);
     const categories = ref([]);
     const additionalProducts = ref([
-      {
-        id: 3,
-        name: 'Electric drill',
-        description: 'High-performance electric drill for heavy-duty drilling.',
-        price: 49.99,
-        image: 'path-to-drill-image.jpg'  // Replace with actual image path
-      },
-      {
-        id: 4,
-        name: 'Wrench set',
-        description: 'A versatile set of wrenches for various applications.',
-        price: 24.99,
-        image: 'path-to-wrench-image.jpg'  // Replace with actual image path
-      },
-      {
-        id: 5,
-        name: 'Pliers',
-        description: 'Durable pliers with a comfortable grip.',
-        price: 12.99,
-        image: 'path-to-pliers-image.jpg'  // Replace with actual image path
-      },
-      {
-        id: 6,
-        name: 'Measuring tape',
-        description: 'Precision measuring tape with a retractable design.',
-        price: 7.99,
-        image: 'path-to-measuring-tape-image.jpg'  // Replace with actual image path
-      }
+  
     ]);
 
     // Fetch products
