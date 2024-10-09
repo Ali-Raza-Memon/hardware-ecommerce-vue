@@ -61,7 +61,7 @@
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { Carousel } from 'ant-design-vue'; // Import Carousel from antd
+import { Carousel } from 'ant-design-vue'; 
 
 export default {
   name: 'HomePage',
@@ -153,14 +153,13 @@ export default {
       addToCart,
       prevSlide,
       nextSlide,
-      carouselRef // Expose the carousel reference and control functions
+      carouselRef 
     };
   }
 };
 </script>
 
 <style scoped>
-/* Align Categories Vertically and Improve Styling */
 .categories-sidebar {
   padding-right: 20px;
   border-right: 1px solid #e0e0e0;
@@ -218,7 +217,6 @@ export default {
 }
 
 .card-action a {
-  color: #007bff;
   text-decoration: none;
   padding: 10px 20px;
   border: 1px solid grey;

@@ -9,7 +9,7 @@
         <ul id="nav-mobile" class="right">
           <li v-if="!isLoggedIn"><router-link to="/login">Logout</router-link></li>
           <li v-if="!isLoggedIn"><router-link to="/register">Register</router-link></li>
-          <li v-if="isLoggedIn">{{ user.name }} {{ user.surname }}</li>
+          <li v-if="isLoggedIn">{{ user.userName }} {{ user.surname }}</li>
           <li v-if="isLoggedIn"><a @click="logout">Logout</a></li>
           <li class="cart-icon-wrapper">
             <router-link to="/cart">
