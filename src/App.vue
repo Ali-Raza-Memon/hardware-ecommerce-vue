@@ -21,7 +21,7 @@
         </ul>
       </div>
     </nav>
-    <router-view/>
+    <router-view :updateCartCount="updateCartCount" :resetCartCount="resetCartCount" />
     <PageFooter />
   </div>
 </template>
@@ -37,8 +37,8 @@ export default {
   },
   data() {
     return {
-      cartCount: 0,
-      cartValue: 0.00,
+      cartCount: 0, // Holds the count of items in the cart
+      cartValue: 0.00, // Holds the total value of items in the cart
       isLoggedIn: false,
       user: {
         name: '',
@@ -47,15 +47,26 @@ export default {
     };
   },
   mounted() {
-    this.fetchCartData();
     this.checkUserStatus();
+    this.fetchCartData();
   },
   methods: {
+    // Fetch initial cart data, could be from an API or localStorage
     fetchCartData() {
       setTimeout(() => {
         this.cartCount = 0;
         this.cartValue = 0.00;
       }, 1000);
+    },
+    // Increment the cart count when a product is added
+    updateCartCount(amount, price) {
+      this.cartCount += amount;
+      this.cartValue += price * amount;
+    },
+    // Reset the cart count after checkout
+    resetCartCount() {
+      this.cartCount = 0;
+      this.cartValue = 0.00;
     },
     async checkUserStatus() {
       try {

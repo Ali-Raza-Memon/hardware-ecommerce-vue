@@ -34,29 +34,9 @@
                 <p><strong>Price:</strong> ${{ product.price }}</p>
               </div>
               <div class="card-action">
-                <a href="/cart" class="btn">Add to Cart</a>
+                <!-- Updated Add to Cart button with event listener -->
+                <a href="javascript:void(0)" class="btn" @click="addToCart(product)">Add to Cart</a>
                 <a :href="'/product/' + product.productId" class="btn">View Details</a>
-              </div>
-            </div>
-          </div>
-          <div v-if="additionalProducts.length > 0">
-            <div class="section-header">
-              <h5>Additional Products</h5>
-            </div>
-            <div v-for="additionalProduct in additionalProducts" :key="additionalProduct.id" class="col s12 m6 l4">
-              <div class="card">
-                <div class="card-image">
-                  <img :src="additionalProduct.image" alt="Product Image">
-                  <span class="card-title">{{ additionalProduct.name }}</span>
-                </div>
-                <div class="card-content">
-                  <p>{{ additionalProduct.description }}</p>
-                  <p><strong>Price:</strong> ${{ additionalProduct.price }}</p>
-                </div>
-                <div class="card-action">
-                  <a href="/cart" class="btn">Add to Cart</a>
-                  <a :href="'/product/' + additionalProduct.id" class="btn">View Details</a>
-                </div>
               </div>
             </div>
           </div>
@@ -73,12 +53,13 @@ import axios from 'axios';
 
 export default {
   name: 'HomePage',
-  setup() {
+  props: {
+    updateCartCount: Function // Receives the method to update the cart count from App.vue
+  },
+  setup(props) {
     const products = ref([]);
     const categories = ref([]);
-    const additionalProducts = ref([
-  
-    ]);
+    const additionalProducts = ref([]);
 
     // Fetch products
     const fetchProducts = async () => {
@@ -89,7 +70,7 @@ export default {
           name: product.name,
           description: product.description,
           price: product.price,
-          productUrl: product.productUrl || 'default-placeholder-image.jpg'  // Ensure a default image
+          productUrl: product.productUrl || 'default-placeholder-image.jpg'
         }));
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -103,24 +84,32 @@ export default {
         categories.value = response.data.map(category => ({
           id: category.id,
           name: category.name,
-          image: category.image || '/path-to-default-category-image.jpg'  // Ensure a default image
+          image: category.image || '/path-to-default-category-image.jpg' // Ensure a default image
         }));
       } catch (error) {
         console.error('Error fetching categories:', error);
       }
     };
 
+    // Function to handle adding product to cart
+    const addToCart = (product) => {
+      // Simulate adding the product to the cart
+      console.log(`Product added to cart: ${product.name}`);
+
+      // Update the cart count via the method passed from App.vue
+      props.updateCartCount(1);
+    };
+
     onMounted(async () => {
       await fetchProducts();
       await fetchCategories();
-      console.log(products.value);
-      console.log(categories.value); // Check if images are correctly loaded
     });
 
     return {
       products,
       additionalProducts,
-      categories
+      categories,
+      addToCart // Expose addToCart to the template
     };
   }
 };
@@ -154,7 +143,7 @@ export default {
 }
 
 .card {
-  margin: 10px 0; /* Adjusted margin for better alignment */
+  margin: 10px 0;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   overflow: hidden;
@@ -180,14 +169,14 @@ export default {
   background: #f5f5f5;
   padding: 10px;
   display: flex;
-  justify-content: center; /* Center buttons horizontally */
-  gap: 10px; /* Space between buttons */
+  justify-content: center;
+  gap: 10px;
 }
 
 .card-action a {
   color: #007bff;
   text-decoration: none;
-  padding: 10px 20px; /* Add padding around the buttons */
+  padding: 10px 20px;
   border: 1px solid grey;
   border-radius: 5px;
   display: inline-block;

@@ -27,7 +27,10 @@ import { getCartItems, removeFromCart } from '@/services/cartService';
 
 export default {
   name: 'CartPage',
-  setup() {
+  props: {
+    resetCart: Function, // Pass down the resetCart method from App.vue
+  },
+  setup(props) {
     const cartItems = ref([]);
     const loading = ref(true);
 
@@ -51,6 +54,9 @@ export default {
 
     const checkout = () => {
       if (total.value > 0) {
+        // Call the resetCart method to reset the cart count
+        props.resetCart(); 
+
         window.location.href = '/orderpage';
       } else {
         alert('Your cart is empty!');
