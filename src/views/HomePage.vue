@@ -6,6 +6,19 @@
       </div>
     </header>
 
+    <!-- Ant Design Slider for Images with Custom Arrows -->
+    <a-carousel :autoplay="true" class="image-slider" ref="carousel" :dots="false">
+      <template #prev>
+        <div class="custom-arrow custom-arrow-left" @click="prevSlide">‹</div>
+      </template>
+      <template #next>
+        <div class="custom-arrow custom-arrow-right" @click="nextSlide">›</div>
+      </template>
+      <div v-for="(product, index) in sliderProducts" :key="index">
+        <img :src="product.productUrl || 'https://via.placeholder.com/800x400'" alt="Product Image" class="slider-image" />
+      </div>
+    </a-carousel>
+
     <div class="row">
       <!-- Sidebar for Categories -->
       <div class="col s12 m3 categories-sidebar">
@@ -34,7 +47,6 @@
                 <p><strong>Price:</strong> ${{ product.price }}</p>
               </div>
               <div class="card-action">
-                <!-- Updated Add to Cart button with event listener -->
                 <a href="javascript:void(0)" class="btn" @click="addToCart(product)">Add to Cart</a>
                 <a :href="'/product/' + product.productId" class="btn">View Details</a>
               </div>
@@ -49,16 +61,22 @@
 <script>
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { Carousel } from 'ant-design-vue'; // Import Carousel from antd
 
 export default {
   name: 'HomePage',
+  components: {
+    'a-carousel': Carousel // Register the carousel component
+  },
   props: {
     updateCartCount: Function // Receives the method to update the cart count from App.vue
   },
   setup(props) {
     const products = ref([]);
     const categories = ref([]);
-    const additionalProducts = ref([]);
+    const sliderProducts = ref([]); // For holding the first 3 products for the slider
+
+    const carouselRef = ref(null); // Reference to the carousel
 
     // Fetch products
     const fetchProducts = async () => {
@@ -71,6 +89,9 @@ export default {
           price: product.price,
           productUrl: product.productUrl || 'default-placeholder-image.jpg'
         }));
+        
+        // Extract first 3 products for the slider
+        sliderProducts.value = response.data.slice(0, 3);
       } catch (error) {
         console.error('Error fetching products:', error);
       }
@@ -110,6 +131,16 @@ export default {
       }
     };
 
+    // Go to the previous slide
+    const prevSlide = () => {
+      carouselRef.value.prev();
+    };
+
+    // Go to the next slide
+    const nextSlide = () => {
+      carouselRef.value.next();
+    };
+
     onMounted(async () => {
       await fetchProducts();
       await fetchCategories();
@@ -117,9 +148,12 @@ export default {
 
     return {
       products,
-      additionalProducts,
+      sliderProducts,
       categories,
-      addToCart // Expose addToCart to the template
+      addToCart,
+      prevSlide,
+      nextSlide,
+      carouselRef // Expose the carousel reference and control functions
     };
   }
 };
@@ -213,5 +247,38 @@ export default {
   background: #f8f9fa;
   border-radius: 5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Image Slider */
+.image-slider {
+  margin-bottom: 30px;
+}
+
+.slider-image {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+}
+
+/* Custom arrow styles */
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.custom-arrow-left {
+  left: 10px;
+}
+
+.custom-arrow-right {
+  right: 10px;
 }
 </style>

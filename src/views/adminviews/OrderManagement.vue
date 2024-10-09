@@ -32,7 +32,7 @@ import axios from 'axios';
 export default {
   data() {
     return {
-      orders: [] // Will hold the orders fetched from the API
+      orders: [] 
     };
   },
   methods: {
