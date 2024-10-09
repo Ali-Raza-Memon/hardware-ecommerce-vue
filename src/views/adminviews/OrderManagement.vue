@@ -3,43 +3,65 @@
     <h3>Manage Orders</h3>
     <table>
       <thead>
-      <tr>
-        <th>Order ID</th>
-        <th>Customer Name</th>
-        <th>Order Date</th>
-        <th>Total Amount</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer Name</th>
+          <th>Order Date</th>
+          <th>Total Amount</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
       </thead>
       <tbody>
-      <tr v-for="order in orders" :key="order.id">
-        <td>{{ order.id }}</td>
-        <td>{{ order.customerName }}</td>
-        <td>{{ order.date }}</td>
-        <td>{{ order.totalAmount }}</td>
-        <td>{{ order.status }}</td>
-        <td><button @click="deleteOrder(order.id)">Delete</button></td>
-      </tr>
+        <tr v-for="order in orders" :key="order.id">
+          <td>{{ order.id }}</td>
+          <td>{{ order.customer.userName }}</td>
+          <td>{{ formatDate(order.date) }}</td>
+          <td>{{ order.product.price }}</td>
+          <td>Delivered</td>
+          <td><button @click="deleteOrder(order.id)">Delete</button></td>
+        </tr>
       </tbody>
     </table>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
-      orders: [
-        { id: 1, customerName: 'John Doe', date: '2024-08-28', totalAmount: '$150.00', status: 'Shipped' },
-        { id: 2, customerName: 'Jane Doe', date: '2024-08-29', totalAmount: '$200.00', status: 'Processing' }
-      ]
+      orders: [] // Will hold the orders fetched from the API
     };
   },
   methods: {
+    // Fetch orders from the API
+    async fetchOrders() {
+      try {
+        const response = await axios.get('http://localhost:8080/ecommerce/api/product-customer/done-processed?customerId=4');
+        this.orders = response.data;
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+      }
+    },
+    
+    // Delete order from the list (This is frontend only, backend API needed for actual delete)
     deleteOrder(id) {
       this.orders = this.orders.filter(order => order.id !== id);
+    },
+
+    // Format date
+    formatDate(date) {
+      if (date) {
+        const formattedDate = new Date(date);
+        return formattedDate.toLocaleDateString();
+      }
+      return 'N/A';
     }
+  },
+  mounted() {
+    this.fetchOrders(); // Fetch orders when the component is mounted
   }
 };
 </script>
