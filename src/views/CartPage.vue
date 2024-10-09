@@ -6,15 +6,21 @@
     <div v-if="loading" class="spinner"></div>
     <ul v-else class="list-group">
       <li v-for="item in cartItems" :key="item.id" class="list-group-item d-flex justify-content-between align-items-center">
-        <div>
-          <h5>{{ item.name }}</h5>
-          <p>${{ item.price }} x {{ item.quantity }}</p>
+        <div class="item-details">
+          <div class="item-image">
+            <img :src="item.product.productUrl || 'https://via.placeholder.com/150'" alt="Product Image">
+          </div>
+          <div class="item-info">
+            <h5>{{ item.product.name }}</h5>
+            <p class="description">{{ item.product.description }}</p>
+            <p><strong>Price:</strong> ${{ item.product.price }}</p>
+          </div>
         </div>
         <button @click="removeFromCart(item.id)" class="btn btn-danger btn-sm">Remove</button>
       </li>
     </ul>
     <div class="total mt-3">
-      <strong>Total: ${{ total }}</strong>
+      <strong>Total: ${{ totalAmount }}</strong>
     </div>
     <button @click="checkout" class="btn btn-primary mt-3">Proceed to Checkout</button>
     <button @click="goBack" class="btn btn-secondary mt-3">Back</button>
@@ -22,8 +28,8 @@
 </template>
 
 <script>
-import { ref, onMounted, computed } from 'vue';
-import { getCartItems, removeFromCart } from '@/services/cartService';
+import { ref, onMounted } from 'vue'; // Removed unused computed
+import axios from 'axios';
 
 export default {
   name: 'CartPage',
@@ -33,30 +39,39 @@ export default {
   setup(props) {
     const cartItems = ref([]);
     const loading = ref(true);
+    const totalAmount = ref(0);
 
+    // Fetch cart items based on customer ID from localStorage
     const fetchCartItems = async () => {
-      cartItems.value = await getCartItems();
-      loading.value = false;
+      try {
+        const user = JSON.parse(localStorage.getItem('user-info'));
+        const customerId = user.userId;
+
+        const response = await axios.get(`http://localhost:8080/ecommerce/api/product-customer/unprocessed?customerId=${customerId}`);
+        cartItems.value = response.data;
+
+        totalAmount.value = cartItems.value.reduce((sum, item) => sum + item.product.price, 0);
+        loading.value = false;
+      } catch (error) {
+        console.error('Error fetching cart items:', error);
+      }
     };
 
-    const handleRemoveFromCart = async (id) => {
-      await removeFromCart(id);
+    // Placeholder for removeFromCart method
+    const removeFromCart = async (id) => {
+      // Implement the remove logic or make an API call
+      console.log(`Removing item with id ${id}`);
       cartItems.value = cartItems.value.filter(item => item.id !== id);
+      totalAmount.value = cartItems.value.reduce((sum, item) => sum + item.product.price, 0);
     };
-
-    const total = computed(() => {
-      return cartItems.value.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    });
 
     const goBack = () => {
       window.history.back();
     };
 
     const checkout = () => {
-      if (total.value > 0) {
-        // Call the resetCart method to reset the cart count
-        props.resetCart(); 
-
+      if (totalAmount.value > 0) {
+        props.resetCart();
         window.location.href = '/orderpage';
       } else {
         alert('Your cart is empty!');
@@ -67,9 +82,9 @@ export default {
 
     return {
       cartItems,
-      total,
+      totalAmount,
       loading,
-      removeFromCart: handleRemoveFromCart,
+      removeFromCart,
       checkout,
       goBack
     };
@@ -146,6 +161,29 @@ h1 {
   }
 }
 
+.item-details {
+  display: flex;
+  align-items: center;
+}
+
+.item-image img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  margin-right: 20px;
+}
+
+.item-info h5 {
+  margin: 0;
+  font-size: 1.2em;
+  color: var(--text-color);
+}
+
+.item-info .description {
+  margin: 5px 0;
+  color: #555;
+}
+
 .list-group-item {
   display: flex;
   justify-content: space-between;
@@ -161,17 +199,6 @@ h1 {
 .list-group-item:hover {
   background-color: #f1f1f1;
   transform: scale(1.02);
-}
-
-.list-group-item h5 {
-  margin: 0;
-  font-size: 1.1em;
-  color: var(--text-color);
-}
-
-.list-group-item p {
-  margin: 0;
-  color: #555;
 }
 
 .total {

@@ -42,7 +42,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -92,12 +91,23 @@ export default {
     };
 
     // Function to handle adding product to cart
-    const addToCart = (product) => {
-      // Simulate adding the product to the cart
-      console.log(`Product added to cart: ${product.name}`);
+    const addToCart = async (product) => {
+      try {
+        // Extract userId from localStorage (which is the customerId)
+        const user = JSON.parse(localStorage.getItem('user-info'));
+        const customerId = user.userId;
 
-      // Update the cart count via the method passed from App.vue
-      props.updateCartCount(1);
+        // Make API request to add the product for the customer
+        const apiUrl = `http://localhost:8080/ecommerce/api/product-customer/create?customerId=${customerId}&productId=${product.productId}`;
+        await axios.post(apiUrl);
+
+        // Update the cart count via the method passed from App.vue
+        props.updateCartCount(1);
+
+        console.log(`Product added to cart: ${product.name}`);
+      } catch (error) {
+        console.error('Error adding product to cart:', error);
+      }
     };
 
     onMounted(async () => {
