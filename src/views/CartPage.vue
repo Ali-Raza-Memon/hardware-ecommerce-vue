@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'; // Removed unused computed
+import { ref, onMounted } from 'vue'; 
 import axios from 'axios';
 
 export default {
@@ -50,6 +50,7 @@ export default {
         const response = await axios.get(`http://localhost:8080/ecommerce/api/product-customer/unprocessed?customerId=${customerId}`);
         cartItems.value = response.data;
 
+        // Calculate the total amount
         totalAmount.value = cartItems.value.reduce((sum, item) => sum + item.product.price, 0);
         loading.value = false;
       } catch (error) {
@@ -59,7 +60,6 @@ export default {
 
     // Placeholder for removeFromCart method
     const removeFromCart = async (id) => {
-      // Implement the remove logic or make an API call
       console.log(`Removing item with id ${id}`);
       cartItems.value = cartItems.value.filter(item => item.id !== id);
       totalAmount.value = cartItems.value.reduce((sum, item) => sum + item.product.price, 0);
@@ -69,10 +69,31 @@ export default {
       window.history.back();
     };
 
-    const checkout = () => {
+    // Checkout and mark products as processed
+    const checkout = async () => {
       if (totalAmount.value > 0) {
-        props.resetCart();
-        window.location.href = '/orderpage';
+        try {
+          // Prepare the IDs of the products to proceed
+          const productCustomerIds = cartItems.value.map(item => item.id);
+
+          // Make the API call to mark the products as processed
+          await axios.put('http://localhost:8080/ecommerce/api/product-customer/proceed', productCustomerIds);
+
+           window.location.reload(); 
+
+
+          // Reset cart count in parent
+          props.resetCart();
+
+          // Refresh cart data after checkout
+          await fetchCartItems();
+
+          // Redirect to the order page (optional, depending on your flow)
+          window.location.href = '/orderpage';
+
+        } catch (error) {
+          console.error('Error proceeding with checkout:', error);
+        }
       } else {
         alert('Your cart is empty!');
       }
