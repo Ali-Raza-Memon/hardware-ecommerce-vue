@@ -39,7 +39,7 @@ export default {
     // Fetch orders from the API
     async fetchOrders() {
       try {
-        const response = await axios.get('http://localhost:8080/ecommerce/api/product-customer/done-processed?customerId=4');
+        const response = await axios.get('http://localhost:8080/ecommerce/api/product-customer/proceeded');
         this.orders = response.data;
       } catch (error) {
         console.error('Error fetching orders:', error);

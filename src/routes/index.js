@@ -12,6 +12,7 @@ import CustomerManagement from "@/views/adminviews/CustomerManagement.vue";
 import CategoryProductManagement from "@/views/adminviews/ProductManagement.vue";
 import ProductManagement from "@/views/adminviews/ProductManagement.vue";
 import OrderManagement from "@/views/adminviews/OrderManagement.vue";
+import CategoryManagement from "@/views/adminviews/CategoryManagement.vue";
 import UploadImage from "@/views/UploadImage.vue"
 
 const routes = [
@@ -31,6 +32,8 @@ const routes = [
   { path: '/admin/category-product', name: 'CategoryProductManagement', component: CategoryProductManagement },
   { path: '/admin/products', name: 'ProductManagement', component: ProductManagement },
   { path: '/admin/orders', name: 'OrderManagement', component: OrderManagement },
+  { path: '/admin/categories', name: 'CategoryManagement', component: CategoryManagement },
+ 
   {
     path: '/upload',
     name: 'UploadImage',
