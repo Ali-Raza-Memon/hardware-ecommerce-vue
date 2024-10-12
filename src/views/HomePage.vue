@@ -26,7 +26,6 @@
           <div class="collection-header"><h5>Categories</h5></div>
           <a v-if="categories.length === 0" class="collection-item">No categories available</a>
           <a v-for="category in categories" :key="category.id" href="#!" class="collection-item">
-            <img v-if="category.image" :src="category.image" alt="Category Image" class="circle category-image">
             {{ category.name }}
           </a>
         </div>
@@ -103,8 +102,7 @@ export default {
         const response = await axios.get('http://localhost:8080/ecommerce/categories/all');
         categories.value = response.data.map(category => ({
           id: category.id,
-          name: category.name,
-          image: category.image || '/path-to-default-category-image.jpg' // Ensure a default image
+          name: category.name
         }));
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -166,17 +164,8 @@ export default {
 }
 
 .collection .collection-item {
-  display: flex;
-  align-items: center;
   padding: 10px;
   border-bottom: 1px solid #e0e0e0;
-}
-
-.collection .collection-item img.category-image {
-  width: 40px;
-  height: 40px;
-  margin-right: 10px;
-  border-radius: 50%;
 }
 
 .collection-header {

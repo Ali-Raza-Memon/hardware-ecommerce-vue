@@ -71,8 +71,7 @@ export default {
             contact: customer.contact,
           };
 
-          // Store user info in local storage
-          alert(JSON.stringify(userInfo));
+         
           localStorage.setItem('user-info', JSON.stringify(userInfo));
 
           this.message = 'Login successful!';

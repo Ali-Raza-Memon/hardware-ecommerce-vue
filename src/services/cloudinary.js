@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const cloudName = 'dhvjnlvtm'; 
+const cloudName = 'dbkr2rgab'; 
 const uploadPreset = 'unsigned_upload'; 
 
 export function uploadImage(file) {
