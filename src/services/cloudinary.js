@@ -1,5 +1,4 @@
 import axios from "axios";
-
 const cloudName = 'dbkr2rgab'; 
 const uploadPreset = 'unsigned_upload'; 
 
