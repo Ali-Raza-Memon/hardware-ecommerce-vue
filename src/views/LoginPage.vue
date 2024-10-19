@@ -59,9 +59,12 @@ export default {
           }
         });
 
+       
+
         if (response.data) {
           // Assuming the response contains the customer object
           const customer = response.data;
+          const token = response.data.jwt;
 
           // Extract necessary information
           const userInfo = {
@@ -71,8 +74,10 @@ export default {
             contact: customer.contact,
           };
 
+          
          
           localStorage.setItem('user-info', JSON.stringify(userInfo));
+          localStorage.setItem('token',JSON.stringify(token));
 
           this.message = 'Login successful!';
 
